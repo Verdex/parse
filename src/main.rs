@@ -1,9 +1,10 @@
 
 // need nongreedy block comment capture
 
-struct Token {
-    name : String, 
-    value : String, // rename components and it probably needs to be some sort of recursive structure because it needs to be able to represent arbitrary ASTs 
+enum Token {
+    Label { name : String },  
+    Class { name : String, value : String },
+    Complex { name : String, components : Vec<Token> },
 }
 
 enum EndCondition {
