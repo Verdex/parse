@@ -1,12 +1,14 @@
 
 // need nongreedy block comment capture
 
+#[derive(Debug)]
 enum Token {
     Label { name : String },  
     Class { name : String, value : String },
     Complex { name : String, components : Vec<Token> },
 }
 
+#[derive(Debug)]
 enum EndCondition {
     Immediate,
     Until(char),
@@ -14,6 +16,7 @@ enum EndCondition {
 
 // instead of simple vs complex maybe ambigeous and ?
 // char to T
+#[derive(Debug)]
 enum Rule {
     Simple { start : char
            , end : EndCondition
@@ -26,8 +29,30 @@ enum Rule {
             }, 
 }
 
-fn lex_next() {
-
+fn lex_next(mut a : (Vec<Rule>, Vec<Token>, Option<Rule>), s_c : (usize, char)) -> (Vec<Rule>, Vec<Token>, Option<Rule>) {
+    let mut (rules, tokens, current_rule) = a;
+    match current_rule {
+        Some(r) => {
+            let (index, current) = s_c;
+            match r {
+                Until(c) if c == current => {
+                    let tok = Token::Class{ name: r.token}
+                    tokens.push(r.accum);
+                    (rules, )
+                },
+                Immediate => panic!("Encountered a current rule that is immediate"),
+            }
+        },
+        None => {
+            let (index, current) = s_c;
+            for rule in rules {
+                match rule {
+                    Rule::Simple { s, e, a, t } if s == current => ,
+                    Rule::Complex { s, a, sub } => ,
+                }
+            }
+        }
+    }
 }
 
 fn main() {
@@ -61,6 +86,8 @@ fn main() {
 
     let z = "abcyuiccaaacdhdefdeg";
 
+    let t = z.char_indices();
+    let o = t.fold( (vec![a, b, c, d], vec![], None), lex_next);
 
-
+    println!("{:?}", o);
 }
